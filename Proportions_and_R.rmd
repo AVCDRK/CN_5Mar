@@ -1,0 +1,80 @@
+---
+title: "Proportions and R"
+author: "Dr K"
+date: "February 27, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(tigerstats)
+require(tidyverse)
+```
+
+## Understanding proportion distributions
+###Identifying when the sample proportion is nearly normal
+A sample proportion can be described as a sample mean. If we represent each "success" as
+a 1 and each "failure" as a 0, then the sample proportion is the mean of these numerical
+outcomes:
+^p =
+0 + 1 + 1 + . . . + 0
+1042
+= 0:82
+The distribution of ^p is nearly normal when the distribution of 0's and 1's is not too strongly
+skewed for the sample size. The most common guideline for sample size and skew when
+working with proportions is to ensure that we expect to observe a minimum number of
+successes (1's) and failures (0's), typically at least 10 of each. The labels success and
+failure need not mean something positive or negative. These terms are just convenient
+words that are frequently used when discussing proportions  
+
+##Conditions for the sampling distribution of ^p being nearly normal
+The sampling distribution for ^p, taken from a sample of size n from a population
+with a true proportion p, is nearly normal when
+1. the sample observations are independent and
+2. we expected to see at least 10 successes and 10 failures in our sample, i.e.
+np >= 10 and n(1-p)>= 10. This is called the success-failure condition.
+If these conditions are met, then the sampling distribution of ^p is nearly normal
+with mean p and standard error SE = sqrt(p*(1-p)/n)
+
+##Why are we interested in proportions? Because it is natural when dealing with categorical data
+
+```{r}
+#make up universe
+Win=rep("win",times=1000)
+Lose=rep("oops",times=4000)
+Mix=c(Win,Lose)
+```
+
+##Now grab 50 points and take a look
+
+```{r}
+out = sample(Mix,size=50)
+
+table(out)
+  
+```
+
+
+### we are going to pick a sample size of 50 and repeatedly draw samples and record the proportions of win  
+
+####This time we will make our data up with numbers 1 for won 0 for oops. Explore what happens as you change the proportion of 1's and the sample size.
+    
+```{r}
+#make up numeric universe,
+Win=rep(1,times=1000)
+Lose=rep(0,times=4000)
+Mix=c(Win,Lose)
+
+    
+ourProp=numeric()
+samsize = 50
+for(i in 1:10000){
+  x<-sample(Mix,size = samsize, replace = TRUE)
+    ourProp[i]<-sum(x)
+}
+Out <- (ourProp/samsize)*100
+  histogram(Out)
+  plot(density(Out))
+mean(Out)
+sd(Out)
+```
